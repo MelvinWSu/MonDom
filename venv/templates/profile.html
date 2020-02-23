@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+{% include "taskbar.html" %}
+
+<div class="container-fluid" align="center">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <h1>Search</h1>
+                <form class="form-horizontal">
+                    <div class="form-group" method="POST">
+                      <label class="col-sm-2 control-label">Enter a Domain</label>
+                      <div class="col-sm-8">
+                        <form method="POST">
+                            <input name="text">
+                            <input type="submit">
+                        </form>
+                      </div>
+                        <div class = "col-sm-1">
+                            <a role="button" class="btn btn-default">Search</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <h1>Saved Websites</h1>
+                <div class="panel-body">
+                    <div class = "col-sm-8">
+                        <div class="card-body">
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      </div>
+                    </div>
+                    <vr></vr>
+                    <div class = "col-sm-4">
+                      <img class="card-img-top" src="..." alt="Card image cap">
+                    </div>
+                </div>
+                <hr>
+                <div class="panel-body">
+                    <div class = "col-sm-8">
+                        <div class="card-body">
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      </div>
+                    </div>
+                    <div class = "col-sm-4">
+                      <img class="card-img-top" src="..." alt="Card image cap">
+                    </div>
+                </div>
+                <hr>
+                <div class="panel-body">
+                    <div class = "col-sm-8">
+                        <div class="card-body">
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      </div>
+                    </div>
+                    <div class = "col-sm-4">
+                      <img class="card-img-top" src="..." alt="Card image cap">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{% block content %} {% endblock %}
+{% include "footer.html" %}
+</html>
