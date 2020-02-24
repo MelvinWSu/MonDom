@@ -2,20 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Footer</title>
+    <title>Display website list</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-{% block content %}
-
-{% endblock %}
-<footer class = "footer">
-    <div class = "navbar-fixed-bottom">
-        <span class = "text-muted"> Stuff</span>
+    {% for website in list %}
+    <div class="panel-body">
+        <div class = "col-sm-8">
+            <div class="card-body">
+            <h3 class="card-text">{{ website }}</h3>
+          </div>
+        </div>
+        <vr></vr>
+        <div class = "col-sm-4">
+          <img class="card-img-top" src="..." alt="Card image cap">
+        </div>
     </div>
-</footer>
+    <hr>
+    {% endfor %}
 </body>
 </html>

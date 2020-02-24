@@ -3,12 +3,13 @@ import pyrebase
 
 firebaseConfig = {
     "apiKey": "os.environ['FIREBASE_API_KEY']",
-    "authDomain": "temp-2705a.firebaseapp.com",
-    "databaseURL": "https://temp-2705a.firebaseio.com",
-    "projectId": "temp-2705a",
-    "storageBucket": "temp-2705a.appspot.com",
-    "messagingSenderId": "435714692697",
-    "appId": "1:435714692697:web:f3798425850b8a1b"
+    "authDomain": "mondom-97740.firebaseapp.com",
+    "databaseURL": "https://mondom-97740.firebaseio.com",
+    "projectId": "mondom-97740",
+    "storageBucket": "mondom-97740.appspot.com",
+    "messagingSenderId": "877143682729",
+    "appId": "1:877143682729:web:54f672e485632c73ad43b8",
+    "measurementId": "G-6S2J42P9KP"
 };
 
 firebase = pyrebase.initialize_app(firebaseConfig)
@@ -32,7 +33,8 @@ class User(UserMixin):
         data = {
             "uid": id_,
             "name": name,
-            "email": email
+            "email": email,
+            "saved_websites":[]
         }
         db = firebase.database()
         db.child("users").push(data)

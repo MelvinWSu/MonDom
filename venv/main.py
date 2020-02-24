@@ -15,18 +15,19 @@ from User_Account import User
 
 firebaseConfig = {
     "apiKey": "os.environ['FIREBASE_API_KEY']",
-    "authDomain": "temp-2705a.firebaseapp.com",
-    "databaseURL": "https://temp-2705a.firebaseio.com",
-    "projectId": "temp-2705a",
-    "storageBucket": "temp-2705a.appspot.com",
-    "messagingSenderId": "435714692697",
-    "appId": "1:435714692697:web:f3798425850b8a1b"
+    "authDomain": "mondom-97740.firebaseapp.com",
+    "databaseURL": "https://mondom-97740.firebaseio.com",
+    "projectId": "mondom-97740",
+    "storageBucket": "mondom-97740.appspot.com",
+    "messagingSenderId": "877143682729",
+    "appId": "1:877143682729:web:54f672e485632c73ad43b8",
+    "measurementId": "G-6S2J42P9KP"
 };
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 
-GOOGLE_CLIENT_ID = '186867853070-u1t7tl6c7fo3glhi11013tncudk71hbs.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = 'uJbdlqfYu1xsHBrOjhRNCl0c'
+GOOGLE_CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
+GOOGLE_CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
@@ -60,7 +61,15 @@ def index():
             )
         )
     else:
-        return ('<body><a class="button" href="/login">Google Login</a><a class="button" href="/home">home</a><a class="button" href="/test">test</a></body>')
+        return ('<body>'
+                '<a class="button" href="/login">Google Login</a>'
+                '<a class="button" href="/home">home</a>'
+                '<a class="button" href="/test">test</a>'
+                '</body>'
+                '<body>'
+                '<a class="button" href="/home">Go to home page</a>'
+                '</body>'
+                )
 
 
 @app.route("/login")
@@ -159,19 +168,40 @@ def home():
 @app.route("/profile")
 @login_required
 def profile():
-    return render_template("profile.html", user = current_user)
+    temp_list = []
+    all_users = firebase.database().child("users").get()
+    for users in all_users.each():
+        if (all_users.val() != None):
+            for users in all_users.each():
+                if (users.val().get('uid') == current_user.id):
+                    the_user = firebase.database().child("users").child(users.key()).child("saved_websites").get()
+                    print(the_user)
+                    if (the_user.val() != None):
+                        for entry in the_user.each():
+                            temp_list.append(entry.val())
+    print(temp_list)
+    return render_template("profile.html", user=current_user, list = temp_list)
 
-@app.route("/profile", methods = ['Get','POST'])
+@app.route("/profile", methods = ['POST'])
+@login_required
 def profile_post():
-    print("stuff")
     text = request.form['text']
-    processed_text = text.upper()
-    print (processed_text)
-    """all_users = firebase.database().child("users").get()
+    temp_list = []
+    all_users = firebase.database().child("users").get()
     if (all_users.val() != None):
         for users in all_users.each():
-            if (users.val().get("uid") == current_user.uid):
-                firebase.database().child("users").child(users.key).child("saved").update(text)"""
+            if (users.val().get('uid') == current_user.id):
+                firebase.database().child("users").child(users.key()).child("saved_websites").push(text)
+    for users in all_users.each():
+        if (all_users.val() != None):
+            for users in all_users.each():
+                if (users.val().get('uid') == current_user.id):
+                    the_user = firebase.database().child("users").child(users.key()).child("saved_websites").get()
+                    print(the_user)
+                    if (the_user.val() != None):
+                        for entry in the_user.each():
+                            temp_list.append(entry.val())
+    return render_template("profile.html", user=current_user, list = temp_list)
 
 
 if __name__ == "__main__":
