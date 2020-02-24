@@ -128,7 +128,6 @@ def callback():
     if userinfo_response.json().get("email_verified"):
         unique_id = userinfo_response.json()["sub"]
         users_email = userinfo_response.json()["email"]
-        picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
     else:
         return "User email not available or not verified by Google.", 400
@@ -170,16 +169,14 @@ def home():
 def profile():
     temp_list = []
     all_users = firebase.database().child("users").get()
-    for users in all_users.each():
-        if (all_users.val() != None):
-            for users in all_users.each():
-                if (users.val().get('uid') == current_user.id):
-                    the_user = firebase.database().child("users").child(users.key()).child("saved_websites").get()
-                    print(the_user)
-                    if (the_user.val() != None):
-                        for entry in the_user.each():
-                            temp_list.append(entry.val())
-    print(temp_list)
+
+    if (all_users.val() != None):
+        for users in all_users.each():
+            if (users.val().get('uid') == current_user.id):
+                the_user = firebase.database().child("users").child(users.key()).child("saved_websites").get()
+                if (the_user.val() != None):
+                    for entry in the_user.each():
+                        temp_list.append(entry.val())
     return render_template("profile.html", user=current_user, list = temp_list)
 
 @app.route("/profile", methods = ['POST'])
@@ -192,15 +189,14 @@ def profile_post():
         for users in all_users.each():
             if (users.val().get('uid') == current_user.id):
                 firebase.database().child("users").child(users.key()).child("saved_websites").push(text)
-    for users in all_users.each():
-        if (all_users.val() != None):
-            for users in all_users.each():
-                if (users.val().get('uid') == current_user.id):
-                    the_user = firebase.database().child("users").child(users.key()).child("saved_websites").get()
-                    print(the_user)
-                    if (the_user.val() != None):
-                        for entry in the_user.each():
-                            temp_list.append(entry.val())
+    if (all_users.val() != None):
+        for users in all_users.each():
+            if (users.val().get('uid') == current_user.id):
+                the_user = firebase.database().child("users").child(users.key()).child("saved_websites").get()
+                print(the_user)
+                if (the_user.val() != None):
+                    for entry in the_user.each():
+                        temp_list.append(entry.val())
     return render_template("profile.html", user=current_user, list = temp_list)
 
 
