@@ -29,18 +29,19 @@
                                 <input name="text" type="url" class="form-control" placeholder="e.g http://google.com, http://youtube.com">
                               </div>
                         </div>
-
                         <div class = "col-sm-2">
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
+                    {%include 'display_search_history.html' %}
                 </form>
             </div>
+
         </div>
 
         <div class="col-sm-6">
             <div class="panel panel-default">
-                <h1>Saved Websites</h1>
+                <h1>Favorite Websites</h1>
                 <div class="panel-body">
                     <div class = "col-sm-8">
                         <div class="card-body">
@@ -53,7 +54,7 @@
                     </div>
                 </div>
                 <hr>
-                {%include 'display_website_list.html' %}
+                {%include 'display_favorite_websites.html' %}
             </div>
         </div>
     </div>

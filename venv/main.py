@@ -149,7 +149,6 @@ def callback():
 
 
 @app.route("/logout")
-@login_required
 def logout():
     logout_user()
     return redirect(url_for("home"))
@@ -173,7 +172,7 @@ def profile():
     if (all_users.val() != None):
         for users in all_users.each():
             if (users.val().get('uid') == current_user.id):
-                the_user = firebase.database().child("users").child(users.key()).child("saved_websites").get()
+                the_user = firebase.database().child("users").child(users.key()).child("recent_searched_websites").get()
                 if (the_user.val() != None):
                     for entry in the_user.each():
                         temp_list.append(entry.val())
@@ -188,17 +187,27 @@ def profile_post():
     if (all_users.val() != None):
         for users in all_users.each():
             if (users.val().get('uid') == current_user.id):
-                firebase.database().child("users").child(users.key()).child("saved_websites").push(text)
+                firebase.database().child("users").child(users.key()).child("recent_searched_websites").push(text)
     if (all_users.val() != None):
         for users in all_users.each():
             if (users.val().get('uid') == current_user.id):
-                the_user = firebase.database().child("users").child(users.key()).child("saved_websites").get()
+                the_user = firebase.database().child("users").child(users.key()).child("recent_searched_websites").get()
                 print(the_user)
                 if (the_user.val() != None):
                     for entry in the_user.each():
                         temp_list.append(entry.val())
     return render_template("profile.html", user=current_user, list = temp_list)
 
+
+@app.route("/profile/setting")
+@login_required
+def settings():
+    temp_list = []
+
+@app.route("/profile/list_managment")
+@login_required
+def lsit_managment():
+    temp_list = []
 
 if __name__ == "__main__":
     app.run(debug=True)

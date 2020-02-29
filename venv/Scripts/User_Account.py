@@ -36,8 +36,7 @@ class User(UserMixin):
         data = {
             "uid": id_,
             "name": name,
-            "email": email,
-            "saved_websites":[]
+            "email": email
         }
         db = firebase.database()
         db.child("users").push(data)
