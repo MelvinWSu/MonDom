@@ -1,7 +1,8 @@
 import requests
 import json
+import os
 
-api_key='AIzaSyCqAMAZW8g15kvk7fGIK3vHpZjk42MQz5c'
+api_key = os.environ["GOOGLE_API_KEY"]
 url = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 payload = {'client': {'clientId': "mycompany", 'clientVersion': "0.1"},
         'threatInfo': {'threatTypes': ["SOCIAL_ENGINEERING", "MALWARE"],
