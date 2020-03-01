@@ -12,49 +12,68 @@
 <body>
 {% include "taskbar.html" %}
 
-<div class="container-fluid" align="center">
+<div class="container-fluid" >
     <div class="row">
         <div class="col-sm-6">
-            <div class="panel panel-default">
-                <h1>Search</h1>
-                <form class="form-horizontal" method = "POST">
-                    <div class="form-group">
-                        <div class = "col-sm-2">
-                            <label>Enter A Website</label>
-                        </div>
-
-                        <div class="col-sm-8">
-                            <div class="form-group">
-
-                                <input name="text" type="url" class="form-control" placeholder="e.g http://google.com, http://youtube.com">
-                              </div>
-                        </div>
-                        <div class = "col-sm-2">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h1 align="center">Search</h1>
                     </div>
-                    {%include 'display_search_history.html' %}
-                </form>
+                    <div class="panel-body">
+                        <form class="form-horizontal" method = "POST">
+                            <div class="form-group">
+                                <div class = "col-sm-2">
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label for="url_get">Enter A Website</label>
+                                        <input id="url_get" name="text" pattern="(http|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?" class="form-control" title="Input must start with http:// or https:// and end with the domain (e.g .com, .edu)" placeholder="e.g http://google.com, https://youtube.com">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                      </div>
+                                </div>
+                                <div class = "col-sm-2">
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="panel-footer"></div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h1 align="center">Recent History</h1>
+                    </div>
+                    <div class="panel-body">
+                        {%include 'display_search_history.html' %}
+                    </div>
+                    <div class="panel-footer"></div>
+                </div>
             </div>
+
 
         </div>
 
         <div class="col-sm-6">
             <div class="panel panel-default">
-                <h1>Favorite Websites</h1>
-                <div class="panel-body">
-                    <div class = "col-sm-8">
-                        <div class="card-body">
-                        <h3 class="card-text">Example Entry</h3>
-                      </div>
-                    </div>
-                    <vr></vr>
-                    <div class = "col-sm-4">
-                      <img class="card-img-top" src="..." alt="Card image cap">
-                    </div>
+                <div class="panel-heading">
+                    <h1 align="center">Favorite Websites</h1>
                 </div>
-                <hr>
-                {%include 'display_favorite_websites.html' %}
+                    <div class="panel-body">
+                        <div class = "col-sm-8">
+                            <div class="card-body">
+                            <h2 class="card-text">Website</h2>
+                          </div>
+                        </div>
+                        <vr></vr>
+                        <div class = "col-sm-4">
+                          <h2 class="card-text">Current Status</h2>
+                        </div>
+                    </div>
+                    <hr>
+                    {%include 'display_favorite_websites.html' %}
+                <div class="panel-footer"></div>
             </div>
         </div>
     </div>
