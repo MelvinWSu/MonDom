@@ -25,17 +25,16 @@ class User(UserMixin):
         all_users = firebase.database().child("users").get()
         if (all_users.val() != None):
             for users in all_users.each():
-                if (users.val().get("uid") == user_id):
+                if (users.key() == user_id):
                     print("Found account")
-                    return User(users.val().get("uid"), users.val().get("name"), users.val().get("email"))
+                    return User(users.key(), users.val().get("name"), users.val().get("email"))
             print("Did not find account")
             return None
 
     def new_account(id_, name, email):
         data = {
-            "uid": id_,
             "name": name,
             "email": email
         }
         db = firebase.database()
-        db.child("users").push(data)
+        db.child("users").child(id_).set(data)
