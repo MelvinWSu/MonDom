@@ -14,9 +14,17 @@ firebaseConfig = {
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 
-data = {
+"""data = {
             "name": "Waffle",
             "email": "Iron"
         }
 firebase = firebase.database()
 firebase.child("users").child("0").set(data)
+"""
+temp_list = []
+the_user = firebase.database().child("users").child("106141010986049248632").child("recent_searched_websites").get()
+if (the_user.val() != None):
+    for entry in the_user.each():
+        temp_list.append(entry.val())
+print(temp_list)
+print (list(reversed(temp_list)))

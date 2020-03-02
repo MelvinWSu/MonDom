@@ -12,6 +12,7 @@ import requests
 import os
 import json
 from User_Account import User
+from datetime import datetime
 
 firebaseConfig = {
     "apiKey": "os.environ['FIREBASE_API_KEY']",
@@ -165,30 +166,17 @@ def home():
 @app.route("/profile")
 @login_required
 def profile():
-    temp_list = []
-    all_users = firebase.database().child("users").get()
-
-    if (all_users.val() != None):
-        for users in all_users.each():
-            if (users.val().get('uid') == current_user.id):
-                the_user = firebase.database().child("users").child(users.key()).child("recent_searched_websites").get()
-                if (the_user.val() != None):
-                    for entry in the_user.each():
-                        temp_list.append(entry.val())
+    temp_list = get_recent_list(current_user.id)
     return render_template("profile.html", user=current_user, list = temp_list)
 
 @app.route("/profile", methods = ['POST'])
 @login_required
 def profile_post():
     text = request.form['text']
-
     # check input
     check_website(text, current_user.id)
     #get recent searches
-    temp_list = []
-    specific_user = firebase.database().child("users").child(id).child("recent_searched_websites").get()
-    for entry in specific_user.each():
-        temp_list.append(entry.val())
+    temp_list = get_recent_list(current_user.id)
     return render_template("profile.html", user=current_user, list = temp_list)
 
 
@@ -205,13 +193,28 @@ def list_managment():
 """check website if it exist, if so add it to recent searches and return true. else, return false"""
 def check_website(input, id):
     specific_user = firebase.database().child("users").child(id).child("recent_searched_websites").get()
-    print(firebase.database().child("users").child(id).val())
-    for website_entry in specific_user.each():
-        if (website_entry.val() == input):
-            return False
-    firebase.database().child("users").child(id).child("recent_searched_websites").push(input)
+    if (specific_user.val() != None):
+        for website_entry in specific_user.each():
+            if (website_entry.val() == input):
+                now = datetime.now()
+                time_str = now.strftime("%Y%m%d%H%M%S")
+                firebase.database().child("users").child(id).child("recent_searched_websites").child(website_entry.key()).remove()
+                firebase.database().child("users").child(id).child("recent_searched_websites").update({time_str: input})
+                return False
+    now = datetime.now()
+    time_str = now.strftime("%Y%m%d%H%M%S")
+    firebase.database().child("users").child(id).child("recent_searched_websites").update({time_str : input})
     return True
 
+def get_recent_list(id):
+    temp_list = []
+    the_user = firebase.database().child("users").child(id).child("recent_searched_websites").get()
+    if (the_user.val() != None):
+        for entry in the_user.each():
+            temp_list.append(entry.val())
+    temp_list = list(reversed(temp_list))
+
+    return temp_list
 
 if __name__ == "__main__":
     app.run(debug=True)
