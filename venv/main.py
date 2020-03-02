@@ -41,7 +41,6 @@ login_manager.init_app(app)
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.retrieve(user_id)
@@ -182,17 +181,19 @@ def profile():
 @login_required
 def profile_post():
     text = request.form['text']
-    temp_list = []
+
+    # check input
     all_users = firebase.database().child("users").get()
     if (all_users.val() != None):
         for users in all_users.each():
             if (users.val().get('uid') == current_user.id):
                 firebase.database().child("users").child(users.key()).child("recent_searched_websites").push(text)
+    #get recent searches
+    temp_list = []
     if (all_users.val() != None):
         for users in all_users.each():
             if (users.val().get('uid') == current_user.id):
                 the_user = firebase.database().child("users").child(users.key()).child("recent_searched_websites").get()
-                print(the_user)
                 if (the_user.val() != None):
                     for entry in the_user.each():
                         temp_list.append(entry.val())
@@ -206,8 +207,12 @@ def settings():
 
 @app.route("/profile/list_managment")
 @login_required
-def lsit_managment():
+def list_managment():
     temp_list = []
+
+"""check website if it exist, if so add it to recent searches and return true. else, return false"""
+def check_website(input):
+     print("l")
 
 if __name__ == "__main__":
     app.run(debug=True)
