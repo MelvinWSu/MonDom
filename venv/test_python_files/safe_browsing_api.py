@@ -44,3 +44,4 @@ r = requests.post(url, params=data, json=payload)
 # Print response
 print(r)
 print(r.json())
+# returns type of threat and platform it affects

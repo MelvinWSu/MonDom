@@ -183,20 +183,12 @@ def profile_post():
     text = request.form['text']
 
     # check input
-    all_users = firebase.database().child("users").get()
-    if (all_users.val() != None):
-        for users in all_users.each():
-            if (users.val().get('uid') == current_user.id):
-                firebase.database().child("users").child(users.key()).child("recent_searched_websites").push(text)
+    check_website(text, current_user.id)
     #get recent searches
     temp_list = []
-    if (all_users.val() != None):
-        for users in all_users.each():
-            if (users.val().get('uid') == current_user.id):
-                the_user = firebase.database().child("users").child(users.key()).child("recent_searched_websites").get()
-                if (the_user.val() != None):
-                    for entry in the_user.each():
-                        temp_list.append(entry.val())
+    specific_user = firebase.database().child("users").child(id).child("recent_searched_websites").get()
+    for entry in specific_user.each():
+        temp_list.append(entry.val())
     return render_template("profile.html", user=current_user, list = temp_list)
 
 
@@ -211,8 +203,15 @@ def list_managment():
     temp_list = []
 
 """check website if it exist, if so add it to recent searches and return true. else, return false"""
-def check_website(input):
-     print("l")
+def check_website(input, id):
+    specific_user = firebase.database().child("users").child(id).child("recent_searched_websites").get()
+    print(firebase.database().child("users").child(id).val())
+    for website_entry in specific_user.each():
+        if (website_entry.val() == input):
+            return False
+    firebase.database().child("users").child(id).child("recent_searched_websites").push(input)
+    return True
+
 
 if __name__ == "__main__":
     app.run(debug=True)
