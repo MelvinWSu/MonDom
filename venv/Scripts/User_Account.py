@@ -25,7 +25,6 @@ class User(UserMixin):
         all_users = firebase.database().child("users").get()
         if (all_users.val() != None):
             for users in all_users.each():
-                print(users.val().get("uid"))
                 if (users.val().get("uid") == user_id):
                     print("Found account")
                     return User(users.val().get("uid"), users.val().get("name"), users.val().get("email"))
