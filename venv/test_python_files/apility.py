@@ -5,7 +5,9 @@ import validators
 client = apilityio.Client(api_key='028d21b2-bad9-4db6-8564-0f60159ee65b')
 
 #TEST
-ip = '0.21.6.27'
+# ip = '127.0.53.53'
+# ip = '0.21.6.27'
+ip = '151.101.0.81'
 response = client.CheckIP(ip)
 
 if response.status_code == 404:

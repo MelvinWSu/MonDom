@@ -21,6 +21,8 @@ firebase = pyrebase.initialize_app(firebaseConfig)
 firebase = firebase.database()
 firebase.child("users").child("0").set(data)
 """
+# firebase.push(r.json()) <-- SAMPLE
+
 temp_list = []
 the_user = firebase.database().child("users").child("106141010986049248632").child("recent_searched_websites").get()
 if (the_user.val() != None):
