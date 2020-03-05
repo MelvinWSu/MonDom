@@ -213,7 +213,6 @@ def get_recent_list(id):
         for entry in the_user.each():
             temp_list.append(entry.val())
     temp_list = list(reversed(temp_list))
-
     return temp_list
 
 if __name__ == "__main__":
