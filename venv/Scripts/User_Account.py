@@ -26,9 +26,7 @@ class User(UserMixin):
         if (all_users.val() != None):
             for users in all_users.each():
                 if (users.key() == user_id):
-                    print("Found account")
                     return User(users.key(), users.val().get("name"), users.val().get("email"))
-            print("Did not find account")
             return None
 
     def new_account(id_, name, email):

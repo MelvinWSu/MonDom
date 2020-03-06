@@ -1,6 +1,8 @@
-import requests # For GET/POST HTTP requests in python
+import requests  # For GET/POST HTTP requests in python
 import json
 import os
+import base64
+import datetime
 
 api_key = os.environ["GOOGLE_API_KEY"]
 
@@ -21,7 +23,7 @@ firebase = pyrebase.initialize_app(firebaseConfig)
 
 # TEST
 # hard-code url value
-# myURL = "http://malware.testing.google.test/testing/malware/"
+# myURL = "malware.testing.google.test/testing/malware/"
 # myURL = "malware.wicar.org"
 
 # ACTUAL
@@ -51,7 +53,9 @@ payload = {"client": {'clientId': "", 'clientVersion': ""},
                           'threatEntryTypes': ["THREAT_ENTRY_TYPE_UNSPECIFIED", "URL", "EXECUTABLE"],
                           'threatEntries': [{'url': myURL}]
                           }
-          }
+           }
+
+print(myURL)
 
 # POST request
 r = requests.post(url, params=data, json=payload)
@@ -60,6 +64,13 @@ r = requests.post(url, params=data, json=payload)
 print(r)
 print(r.json())
 
+
+info = {
+    "url":myURL,
+    "last_update":datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
+    "IP_address":"000.000.000.000"
+}
 firebase = firebase.database()
-firebase.push(r.json())
+firebase.child("database").child(base64.b64encode(bytes(myURL, "utf-8"))).child("safebrowsing").set(r.json())
+firebase.child("database").child(base64.b64encode(bytes(myURL, "utf-8"))).update(info)
 # returns type of threat and platform it affects

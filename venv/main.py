@@ -12,7 +12,8 @@ import requests
 import os
 import json
 from User_Account import User
-from datetime import datetime
+import datetime
+import base64
 
 firebaseConfig = {
     "apiKey": "os.environ['FIREBASE_API_KEY']",
@@ -39,13 +40,13 @@ app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+api_key = os.environ["GOOGLE_API_KEY"]
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.retrieve(user_id)
-
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
@@ -167,18 +168,26 @@ def home():
 @login_required
 def profile():
     temp_list = get_recent_list(current_user.id)
-    return render_template("profile.html", user=current_user, list = temp_list)
+    favorite_list = get_favorites_list(current_user.id)
+    return render_template("profile.html", user=current_user, recent_searched_websites = temp_list,favorite_list = favorite_list)
 
 @app.route("/profile", methods = ['POST'])
 @login_required
 def profile_post():
-    text = request.form['text']
-    # check input
-    check_website(text, current_user.id)
-    #get recent searches
-    temp_list = get_recent_list(current_user.id)
-    return render_template("profile.html", user=current_user, list = temp_list)
 
+    text = request.form.get('search_input',"")
+    add_to_favorite = request.form.get('add_to_favorite', "")
+    website_result = ""
+    if (text != ""):
+        text = "http://" + text
+        # check input
+        website_result = check_website(text, current_user.id)
+        #get recent searches
+    elif (add_to_favorite != ""):
+        add_website_favorite(current_user.id, add_to_favorite)
+    recent_list = get_recent_list(current_user.id)
+    favorite_list = get_favorites_list(current_user.id)
+    return render_template("profile.html", user=current_user, recent_searched_websites = recent_list, website_info = website_result, favorite_list = favorite_list)
 
 @app.route("/profile/setting")
 @login_required
@@ -196,15 +205,57 @@ def check_website(input, id):
     if (specific_user.val() != None):
         for website_entry in specific_user.each():
             if (website_entry.val() == input):
-                now = datetime.now()
+                now = datetime.datetime.now()
                 time_str = now.strftime("%Y%m%d%H%M%S")
                 firebase.database().child("users").child(id).child("recent_searched_websites").child(website_entry.key()).remove()
                 firebase.database().child("users").child(id).child("recent_searched_websites").update({time_str: input})
-                return False
-    now = datetime.now()
+                return get_website_info(input)
+    payload = {"client": {'clientId': "", 'clientVersion': ""},
+               "threatInfo": {'threatTypes': ["THREAT_TYPE_UNSPECIFIED", "MALWARE", "SOCIAL_ENGINEERING",
+                                              "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"],
+                              'platformTypes': ["PLATFORM_TYPE_UNSPECIFIED", "WINDOWS", "LINUX", "ANDROID", "OSX",
+                                                "IOS",
+                                                "ANY_PLATFORM", "ALL_PLATFORMS", "CHROME"],
+                              'threatEntryTypes': ["THREAT_ENTRY_TYPE_UNSPECIFIED", "URL", "EXECUTABLE"],
+                              'threatEntries': [{'url': input}]
+                              }
+               }
+    r = requests.post("https://safebrowsing.googleapis.com/v4/threatMatches:find", params={'key': api_key}, json=payload)
+    print(r)
+    print(r.json())
+    now = datetime.datetime.now()
     time_str = now.strftime("%Y%m%d%H%M%S")
+    info = {
+        "url": input,
+        "last_update": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
+        "IP_address": "000.000.000.000"
+    }
+    website_entry = firebase.database()
+
+    website_entry.child("database").child(base64.b64encode(bytes(input, "utf-8"))).child("safebrowsing").set(r.json())
+    website_entry.child("database").child(base64.b64encode(bytes(input, "utf-8"))).update(info)
     firebase.database().child("users").child(id).child("recent_searched_websites").update({time_str : input})
-    return True
+    return get_website_info(input)
+
+
+def add_website_favorite(id,input):
+    num_iter = 0
+    specific_user = firebase.database().child("users").child(id).child("favorited_websites").get()
+    if (specific_user.val() != None):
+        for website in specific_user.each():
+            if (website.val() != input):
+                num_iter = num_iter + 1
+            else:
+                return True
+    firebase.database().child("users").child(id).child("favorited_websites").child(num_iter).set(input)
+
+def get_favorites_list(id):
+    temp_list = []
+    the_user = firebase.database().child("users").child(id).child("favorited_websites").get()
+    if (the_user.val() != None):
+        for entry in the_user.each():
+            temp_list.append(entry.val())
+    return temp_list
 
 def get_recent_list(id):
     temp_list = []
@@ -214,6 +265,14 @@ def get_recent_list(id):
             temp_list.append(entry.val())
     temp_list = list(reversed(temp_list))
     return temp_list
+
+def get_website_info(input):
+    b64encoded = base64.b64encode(bytes(input, "utf-8"))
+    website_results = firebase.database().child("database").child(b64encoded).child("safebrowsing").get()
+    print(website_results)
+    print(website_results.val())
+    return website_results.val()
+
 
 if __name__ == "__main__":
     app.run(debug=True)

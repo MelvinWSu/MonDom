@@ -1,1 +1,3 @@
 pyvenv.cfg
+test_python_files/credentials.json
+test_python_files/token.pickle

@@ -4,7 +4,7 @@
   <title>Welcome To MonDom</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
@@ -12,13 +12,16 @@
 {% include "taskbar.html" %}
 <div class="container" align="center">
   <h2>Welcome To MonDom</h2>
-    <div class="form-group" align = "center">
+    <div align = "center">
       {% if user %}
         {% if user.is_authenticated %}
-        <a role="button" href="/profile" class="btn btn-default">Go to Your Profile</a>
-
+          <a href="/profile">
+            <button class="btn btn-primary" href="/profile">Go to Your Profile</button>
+          </a>
         {% else %}
-        <a role="button" href="/login" class="btn btn-default">Login / Create Account</a>
+          <a href="/login">
+            <button class="btn btn-default" href="/login">Login / Create Account</button>
+          </a>
         {% endif %}
       {% endif %}
     </div>

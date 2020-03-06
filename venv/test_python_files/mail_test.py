@@ -1,10 +1,11 @@
+#https://pythonhosted.org/Flask-Mail/
+#Simple implementation of sending emails
 from flask import Flask
 from flask_mail import Mail
 import os
 from flask_mail import Message
 
 app = Flask(__name__)
-mail = Mail(app)
 
 mail_settings = {
     "MAIL_SERVER": 'smtp.gmail.com',
@@ -16,11 +17,11 @@ mail_settings = {
 }
 
 app.config.update(mail_settings)
-
+mail = Mail(app)
 
 if __name__ == "__main__":
     msg = Message(subject="Hello",
                   sender=app.config.get('MAIL_USERNAME'),
                   recipients=["msu009@ucr.edu"])
-
-    mail.send(msg)
+    with app.app_context():
+        mail.send(msg)

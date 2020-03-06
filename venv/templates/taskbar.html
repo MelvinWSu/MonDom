@@ -4,30 +4,30 @@
     <meta charset="UTF-8">
     <title>MonDom - Taskbar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
      <div class="container-fluid">
          <a class="navbar-brand" href="/home">MonDom</a>
-         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Profile</a></li>
-            <li><a href="#">Profile Settings</a></li>
-            <li><a href="#">List Management</a></li>
+         <ul class="navbar-nav mr-auto">
+            <li class="nav-item active"><a class="nav-link" href="#">Profile</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Profile Settings</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">List Management</a></li>
          </ul>
          <ul class="nav navbar-nav navbar-right">
              {% if user %}
                 {% if user.is_authenticated %}
-                <li><a href="logout"><span class="glyphicon glyphicon-user"></span> Sign Out</a></li>
+                <li><a class="nav-link" href="logout"><span class="glyphicon glyphicon-user"></span> Sign Out</a></li>
                 {% endif %}
              {% else %}
-             <li><a href="login"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+             <li><a class="nav-link" href="login"><span class="glyphicon glyphicon-user"></span> Login</a></li>
 
              {% endif %}
-             <li><a href="#"><span class="glyphicon glyphicon-user"></span> Contact Us</a></li>
+             <li><a class="nav-link" href="#"><span class="glyphicon glyphicon-user"></span> Contact Us</a></li>
          </ul>
      </div>
 </nav>

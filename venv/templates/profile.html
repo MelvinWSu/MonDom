@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>MonDom - Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
@@ -15,40 +15,44 @@
 <div class="container-fluid" >
     <div class="row">
         <div class="col-sm-6">
-            <div class="panel-group">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+            <div class="card">
+                <div class="card">
+                    <div class="card-header">
                         <h1 align="center">Search</h1>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                         <form class="form-horizontal" method = "POST">
-                            <div class="form-group">
+                            <div class="card-group">
                                 <div class = "col-sm-2">
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="form-group">
                                         <label for="url_get">Enter A Website</label>
-                                        <input id="url_get" name="text" pattern="(http|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?" class="form-control" title="Input must start with http:// or https:// and end with the domain (e.g .com, .edu)" placeholder="e.g http://google.com, https://youtube.com" required>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">http://</span>
+                                            </div>
+                                            <input id="url_get" name="search_input" pattern="[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)" class="form-control" title="Input must end with the domain (e.g .com, .edu)" placeholder="e.g google.com, youtube.com" required>
+                                        </div>
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                       </div>
                                 </div>
                                 <div class = "col-sm-2">
                                 </div>
                             </div>
-
                         </form>
+                        {%include 'url_result.html' %}
                     </div>
-
-                    <div class="panel-footer"></div>
+                    <div class="card-footer"></div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                <div class="card">
+                    <div class="card-header">
                         <h1 align="center">Recent History</h1>
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                         {%include 'display_search_history.html' %}
                     </div>
-                    <div class="panel-footer"></div>
+                    <div class="card-footer"></div>
                 </div>
             </div>
 
@@ -56,24 +60,25 @@
         </div>
 
         <div class="col-sm-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h1 align="center">Favorite Websites</h1>
                 </div>
-                    <div class="panel-body">
-                        <div class = "col-sm-8">
-                            <div class="card-body">
-                            <h2 class="card-text">Website</h2>
-                          </div>
-                        </div>
-                        <vr></vr>
-                        <div class = "col-sm-4">
-                          <h2 class="card-text">Current Status</h2>
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <div class="card-body">
+                            <h5 class="card-title" align="center">Website Status</h5>
                         </div>
                     </div>
-                    <hr>
-                    {%include 'display_favorite_websites.html' %}
-                <div class="panel-footer"></div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title"">Website Name</h5>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                {%include 'display_favorite_websites.html' %}
+                <div class="card-footer"></div>
             </div>
         </div>
     </div>
