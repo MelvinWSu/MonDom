@@ -266,8 +266,8 @@ def get_recent_list(id):
     temp_list = list(reversed(temp_list))
     return temp_list
 
-def get_website_info(input):
-    b64encoded = base64.b64encode(bytes(input, "utf-8"))
+def get_website_info(website):
+    b64encoded = base64.b64encode(bytes(website, "utf-8"))
     website_results = firebase.database().child("database").child(b64encoded).child("safebrowsing").get()
     print(website_results)
     print(website_results.val())
