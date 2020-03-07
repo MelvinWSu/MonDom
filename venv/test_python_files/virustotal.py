@@ -6,7 +6,6 @@ __date__ = 'July 10, 2018'
 # VT Domain Scanner takes a file of domains, submits them to the Virus Total
 # domain scanning API and outputs the domain and AV hits to a text file.
 # If you have a private API key, you can change the sleep times to 1 for faster scanning
-
 import os.path
 import csv
 import time
