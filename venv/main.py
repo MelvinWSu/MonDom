@@ -54,6 +54,7 @@ def get_google_provider_cfg():
 """root should no longer be accessed, use home as default url"""
 @app.route("/")
 def index():
+
     if current_user.is_authenticated:
         return (
             "<p>Helloo, {}! You're logged in! Email: {}</p>"
@@ -154,27 +155,23 @@ def logout():
     logout_user()
     return redirect(url_for("home"))
 
-
-@app.route('/test')
-def test_page():
-    return render_template("test.html")
-
-
 @app.route("/home")
 def home():
-    return render_template("home.html", user = current_user)
+    self_url = get_self_url()
+    return render_template("home.html", user = current_user, current_page = self_url)
 
 @app.route("/profile")
 @login_required
 def profile():
+    self_url = get_self_url()
     temp_list = get_recent_list(current_user.id)
     favorite_list = get_favorites_list(current_user.id)
-    return render_template("profile.html", user=current_user, recent_searched_websites = temp_list,favorite_list = favorite_list)
+    return render_template("profile.html", user=current_user, recent_searched_websites = temp_list,favorite_list = favorite_list, current_page = self_url)
 
 @app.route("/profile", methods = ['POST'])
 @login_required
 def profile_post():
-
+    self_url = get_self_url()
     text = request.form.get('search_input',"")
     add_to_favorite = request.form.get('add_to_favorite', "")
     website_result = ""
@@ -187,17 +184,22 @@ def profile_post():
         add_website_favorite(current_user.id, add_to_favorite)
     recent_list = get_recent_list(current_user.id)
     favorite_list = get_favorites_list(current_user.id)
-    return render_template("profile.html", user=current_user, recent_searched_websites = recent_list, website_info = website_result, favorite_list = favorite_list)
+    return render_template("profile.html", user=current_user, recent_searched_websites = recent_list, website_info = website_result, favorite_list = favorite_list, current_page = self_url)
 
 @app.route("/profile/setting")
 @login_required
 def settings():
     temp_list = []
+    self_url = get_self_url()
+    return render_template("profile_settings.html", user=current_user,  current_page=self_url)
 
 @app.route("/profile/list_managment")
 @login_required
 def list_managment():
     temp_list = []
+    favorite_list = get_favorites_list(current_user.id)
+    self_url = get_self_url()
+    return render_template("profile_favorite_managment.html", user=current_user, favorite_list=favorite_list, current_page=self_url)
 
 """check website if it exist, if so add it to recent searches and return true. else, return false"""
 def check_website(input, id):
@@ -273,6 +275,10 @@ def get_website_info(website):
     print(website_results.val())
     return website_results.val()
 
+def get_self_url():
+    temp_str = request.url
+    temp_str = temp_str.replace("http://127.0.0.1:5000/","")
+    return(temp_str)
 
 if __name__ == "__main__":
     app.run(debug=True)
