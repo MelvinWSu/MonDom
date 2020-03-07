@@ -160,6 +160,11 @@ def home():
     self_url = get_self_url()
     return render_template("home.html", user = current_user, current_page = self_url)
 
+@app.route("/contact")
+def contact():
+    self_url = get_self_url()
+    return render_template("contact.html", user = current_user, current_page = self_url)
+
 @app.route("/profile")
 @login_required
 def profile():
@@ -186,7 +191,7 @@ def profile_post():
     favorite_list = get_favorites_list(current_user.id)
     return render_template("profile.html", user=current_user, recent_searched_websites = recent_list, website_info = website_result, favorite_list = favorite_list, current_page = self_url)
 
-@app.route("/profile/setting")
+@app.route("/profile/settings")
 @login_required
 def settings():
     temp_list = []
@@ -199,7 +204,7 @@ def list_managment():
     temp_list = []
     favorite_list = get_favorites_list(current_user.id)
     self_url = get_self_url()
-    return render_template("profile_favorite_managment.html", user=current_user, favorite_list=favorite_list, current_page=self_url)
+    return render_template("list_managment.html", user=current_user, favorite_list=favorite_list, current_page=self_url)
 
 """check website if it exist, if so add it to recent searches and return true. else, return false"""
 def check_website(input, id):

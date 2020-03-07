@@ -12,23 +12,50 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
      <div class="container-fluid">
-         <a class="navbar-brand" href="/home">{location.href}</a>
+         <a class="navbar-brand" href="/home">MonDom</a>
+         {% if user %}
+            {% if user.is_authenticated %}
          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active"><a class="nav-link" href="#">Profile</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Profile Settings</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">List Management</a></li>
+             {% if current_page == "profile" %}
+             <li class="nav-item active"><a class="nav-link" href="/profile">Profile</a></li>
+             {% else %}
+             <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+             {% endif %}
+             {% if current_page == "profile/settings" %}
+             <li class="nav-item active"><a class="nav-link" href="/profile/settings">Profile Settings</a></li>
+             {% else %}
+             <li class="nav-item"><a class="nav-link" href="/profile/settings">Profile Settings</a></li>
+             {% endif %}
+             {% if current_page == "profile/list_managment" %}
+             <li class="nav-item active"><a class="nav-link" href="/profile/list_managment">List Management</a></li>
+             {% else %}
+             <li class="nav-item"><a class="nav-link" href="/profile/list_managment">List Management</a></li>
+             {% endif %}
          </ul>
          <ul class="nav navbar-nav navbar-right">
-             {% if user %}
-                {% if user.is_authenticated %}
-                <li><a class="nav-link" href="logout"><span class="glyphicon glyphicon-user"></span> Sign Out</a></li>
-                {% endif %}
-             {% else %}
-             <li><a class="nav-link" href="login"><span class="glyphicon glyphicon-user"></span> Login</a></li>
 
+                <li><a class="nav-link" href="logout"><span class="glyphicon glyphicon-user"></span> Sign Out</a></li>
+
+
+
+             {% if current_page == "contact" %}
+             <li><a class="nav-link active" href="/contact"><span class="glyphicon glyphicon-user"></span> Contact Us</a></li>
+             {% else %}
+             <li><a class="nav-link" href="/contact"><span class="glyphicon glyphicon-user"></span> Contact Us</a></li>
              {% endif %}
-             <li><a class="nav-link" href="#"><span class="glyphicon glyphicon-user"></span> Contact Us</a></li>
          </ul>
+         {% else %}
+         <ul class="nav navbar-nav navbar-right">
+             <li><a class="nav-link" href="login"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+             {% if current_page == "contact" %}
+             <li><a class="nav-link active" href="/contact"><span class="glyphicon glyphicon-user"></span> Contact Us</a></li>
+             {% else %}
+             <li><a class="nav-link" href="/contact"><span class="glyphicon glyphicon-user"></span> Contact Us</a></li>
+             {% endif %}
+         </ul>
+
+         {% endif %}
+         {% endif %}
      </div>
 </nav>
 {% block content %}
