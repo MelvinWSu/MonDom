@@ -1,7 +1,21 @@
 import apilityio
 from datetime import datetime
+import pyrebase
 import requests
 import validators
+
+firebaseConfig = {
+    "apiKey": "os.environ['FIREBASE_API_KEY']",
+    "authDomain": "mondom-97740.firebaseapp.com",
+    "databaseURL": "https://mondom-97740.firebaseio.com",
+    "projectId": "mondom-97740",
+    "storageBucket": "mondom-97740.appspot.com",
+    "messagingSenderId": "877143682729",
+    "appId": "1:877143682729:web:54f672e485632c73ad43b8",
+    "measurementId": "G-6S2J42P9KP"
+};
+
+firebase = pyrebase.initialize_app(firebaseConfig)
 
 client = apilityio.Client(api_key='028d21b2-bad9-4db6-8564-0f60159ee65b')
 
@@ -32,6 +46,8 @@ for items in transaction.json.get("changes_domain"):
     timestamp = items.get("timestamp")
     dt_obj = datetime.fromtimestamp(timestamp//1000)
     print(str(dt_obj) + " " + items.get("command") + " " + items.get("blacklists") + " " + items.get("blacklist_change"))
+
+firebase.push(transaction.json())
 
 print("IP Result:")
 if response.status_code == 404:
