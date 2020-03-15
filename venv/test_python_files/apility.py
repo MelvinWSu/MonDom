@@ -3,6 +3,7 @@ from datetime import datetime
 import pyrebase
 import requests
 import validators
+import base64
 
 firebaseConfig = {
     "apiKey": "os.environ['FIREBASE_API_KEY']",
@@ -47,7 +48,9 @@ for items in transaction.json.get("changes_domain"):
     dt_obj = datetime.fromtimestamp(timestamp//1000)
     print(str(dt_obj) + " " + items.get("command") + " " + items.get("blacklists") + " " + items.get("blacklist_change"))
 
-firebase.push(transaction.json())
+b64encoded = base64.b64encode(bytes("http://" + domain, "utf-8"))
+website_results = firebase.database().child("database").child(b64encoded).child("apility")
+website_results.push(transaction.json)
 
 print("IP Result:")
 if response.status_code == 404:
