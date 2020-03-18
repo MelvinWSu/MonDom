@@ -8,11 +8,78 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-<body>
 {% include "taskbar.html" %}
-<div class="container"></div>
-  </form>
-</div>
+<body>
+<form class="form-horizontal" method = "POST">
+    <div class="row no-gutters">
+        <div class="col-md-2">
+            <div class="card-body">
+                <h5 class="card-title" align="center">Website Status</h5>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card-body">
+                <h5 class="card-title">Website Name</h5>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card-body" align="center">
+                <h5 class="card-title">Email Frequency</h5>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card-body" align="center">
+                <h5 class="card-title">Delete?</h5>
+            </div>
+        </div>
+    </div>
+    <hr>
+    {% for website in favorite_list %}
+    <div class="row no-gutters">
+        <div class="col-md-2" align="center">
+            <div class="card-body">
+              {% if website[1] == True %}
+                <h5>Bad</h5>
+                {%else%}
+                <h5>Good</h5>
+                {%endif%}
+            </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card-body">
+            <h5 class="card-title">{{website[0]}}</h5>
+          </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card-body" align="center">
+                {% if website[2] == {'priority':'no'} %}
+                <button type="button" class="btn btn-secondary">Don't Send</button>
+                <button type="submit" name="cmd" value={{website[0]}},2 class="btn btn-outline-primary">Normal</button>
+                <button type="submit" name="cmd" value={{website[0]}},3 class="btn btn-outline-warning">Emergency</button>
+                {% elif website[2] == {'priority':'normal'} %}
+                <button type="submit" name="cmd" value={{website[0]}},1 class="btn btn-outline-secondary">Don't Send</button>
+                <button type="button" class="btn btn-primary">Normal</button>
+                <button type="submit" name="cmd" value={{website[0]}},3 class="btn btn-outline-warning">Emergency</button>
+                {% elif website[2] == {'priority':'emer'} %}
+                <button type="submit" name="cmd" value={{website[0]}},1 class="btn btn-outline-secondary">Don't Send</button>
+                <button type="submit" name="cmd" value={{website[0]}},2 class="btn btn-outline-primary">Normal</button>
+                <button type="button" class="btn btn-warning">Emergency</button>
+                {% else %}
+                <button type="submit" name="cmd" value={{website[0]}},1 class="btn btn-outline-secondary">Don't Send</button>
+                <button type="submit" name="cmd" value={{website[0]}},2 class="btn btn-outline-primary">Normal</button>
+                <button type="submit" name="cmd" value={{website[0]}},3 class="btn btn-outline-warning">Emergency</button>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card-body" align="center">
+                <button type="submit" name="cmd" value={{website[0]}},del class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+    <hr>
+    {% endfor %}
+</form>
 </body>
 {% block content %}{% endblock %}
 {% include "footer.html" %}

@@ -36,30 +36,12 @@
                 <li>
                     <a class="nav-link" href="/logout"><span class="glyphicon glyphicon-user"></span> Sign Out</a>
                 </li>
-                {% if current_page == "contact" %}
-                    <li>
-                        <a class="nav-link active" href="/contact"><span class="glyphicon glyphicon-user"></span> Contact Us</a>
-                    </li>
-                {% else %}
-                    <li>
-                        <a class="nav-link" href="/contact"><span class="glyphicon glyphicon-user"></span> Contact Us</a>
-                    </li>
-             {% endif %}
          </ul>
          {% else %}
          <ul class="nav navbar-nav navbar-right">
              <li>
                  <a class="nav-link" href="/login"><span class="glyphicon glyphicon-user"></span> Login</a>
              </li>
-             {% if current_page == "contact" %}
-                 <li>
-                     <a class="nav-link active" href="/contact"><span class="glyphicon glyphicon-user"></span> Contact Us</a>
-                 </li>
-             {% else %}
-                 <li>
-                     <a class="nav-link" href="/contact"><span class="glyphicon glyphicon-user"></span> Contact Us</a>
-                 </li>
-             {% endif %}
          </ul>
             {% endif %}
          {% endif %}

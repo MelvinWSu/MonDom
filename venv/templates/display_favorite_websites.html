@@ -11,12 +11,18 @@
 <body>
     {% for website in favorite_list %}
     <div class="row no-gutters">
-        <div class="col-md-4">
-          <img src="..." class="card-img" alt="...">
+        <div class="col-md-4" align="center">
+            <div class="card-body">
+              {% if website[1] == True %}
+                <h5>Bad</h5>
+                {%else%}
+                <h5>Good</h5>
+                {%endif%}
+            </div>
         </div>
         <div class="col-md-8">
           <div class="card-body">
-            <h5 class="card-title">{{website}}</h5>
+            <h5 class="card-title">{{website[0]}}</h5>
           </div>
         </div>
     </div>

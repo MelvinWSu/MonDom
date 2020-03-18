@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 import pyrebase
+import datetime
 
 firebaseConfig = {
     "apiKey": "os.environ['FIREBASE_API_KEY']",
@@ -30,9 +31,13 @@ class User(UserMixin):
             return None
 
     def new_account(id_, name, email):
+        now = datetime.datetime.now()
+        time_str = now.strftime("%Y%m%d")
         data = {
             "name": name,
-            "email": email
+            "email": email,
+            "email_freq": 1,
+            "last_time":time_str
         }
         db = firebase.database()
         db.child("users").child(id_).set(data)

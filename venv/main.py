@@ -14,6 +14,7 @@ import json
 from User_Account import User
 import datetime
 import base64
+from email_control import create_message, send_message
 
 firebaseConfig = {
     "apiKey": "os.environ['FIREBASE_API_KEY']",
@@ -54,7 +55,7 @@ def get_google_provider_cfg():
 """root should no longer be accessed, use home as default url"""
 @app.route("/")
 def index():
-
+    send_emails("106141010986049248632")
     if current_user.is_authenticated:
         return (
             "<p>Helloo, {}! You're logged in! Email: {}</p>"
@@ -63,6 +64,7 @@ def index():
             )
         )
     else:
+
         return ('<body>'
                 '<a class="button" href="/login">Google Login</a>'
                 '<a class="button" href="/home">home</a>'
@@ -160,24 +162,20 @@ def home():
     self_url = get_self_url()
     return render_template("home.html", user = current_user, current_page = self_url)
 
-@app.route("/contact")
-def contact():
-    self_url = get_self_url()
-    return render_template("contact.html", user = current_user, current_page = self_url)
-
 @app.route("/profile")
 @login_required
 def profile():
     self_url = get_self_url()
     temp_list = get_recent_list(current_user.id)
     favorite_list = get_favorites_list(current_user.id)
+    favorite_list = list(zip(favorite_list,return_website(favorite_list)))
     return render_template("profile.html", user=current_user, recent_searched_websites = temp_list,favorite_list = favorite_list, current_page = self_url)
 
 @app.route("/profile", methods = ['POST'])
 @login_required
 def profile_post():
     self_url = get_self_url()
-    text = request.form.get('search_input',"")
+    text = request.form.get('search_input', "")
     add_to_favorite = request.form.get('add_to_favorite', "")
     website_result = ""
     if (text != ""):
@@ -189,20 +187,57 @@ def profile_post():
         add_website_favorite(current_user.id, add_to_favorite)
     recent_list = get_recent_list(current_user.id)
     favorite_list = get_favorites_list(current_user.id)
+    favorite_list = list(zip(favorite_list,return_website(favorite_list)))
     return render_template("profile.html", user=current_user, recent_searched_websites = recent_list, website_info = website_result, favorite_list = favorite_list, current_page = self_url)
 
 @app.route("/profile/settings")
 @login_required
 def settings():
-    temp_list = []
     self_url = get_self_url()
-    return render_template("profile_settings.html", user=current_user,  current_page=self_url)
+    email_freq = get_email_freq(current_user.id)
+    return render_template("profile_settings.html", user=current_user, email_freq=email_freq, current_page=self_url)
+
+@app.route("/profile/settings", methods=['POST'])
+@login_required
+def settings_update():
+    text = request.form.get('input', "")
+    text2 = request.form.get('send', "")
+    print(text2)
+    email_good = False
+    if (text != None):
+        change_email_freq(current_user.id, text)
+    if (text2):
+        email_good = send_emails(current_user.id)
+    self_url = get_self_url()
+    email_freq = get_email_freq(current_user.id)
+    return render_template("profile_settings.html", user=current_user, email_freq=email_freq, current_page=self_url, email_good=email_good)
 
 @app.route("/profile/list_managment")
 @login_required
 def list_managment():
-    temp_list = []
-    favorite_list = get_favorites_list(current_user.id)
+    favorite_list = get_detailed_favorites_list(current_user.id)
+    only_favs = []
+    only_prio = []
+    for temp in favorite_list:
+        only_favs.append(temp[0])
+        only_prio.append(temp[1])
+    favorite_list = zip(only_favs, return_website(only_favs), only_prio)
+    self_url = get_self_url()
+    return render_template("list_managment.html", user=current_user, favorite_list=favorite_list, current_page=self_url)
+
+@app.route("/profile/list_managment", methods = ['POST'])
+@login_required
+def list_managment_update():
+    text = request.form.get('cmd', "")
+    input = text.split(",")
+    update_favorite(current_user.id, input[0], input[1])
+    favorite_list = get_detailed_favorites_list(current_user.id)
+    only_favs = []
+    only_prio = []
+    for temp in favorite_list:
+        only_favs.append(temp[0])
+        only_prio.append(temp[1])
+    favorite_list = zip(only_favs, return_website(only_favs), only_prio)
     self_url = get_self_url()
     return render_template("list_managment.html", user=current_user, favorite_list=favorite_list, current_page=self_url)
 
@@ -246,22 +281,32 @@ def check_website(input, id):
 
 
 def add_website_favorite(id,input):
-    num_iter = 0
     specific_user = firebase.database().child("users").child(id).child("favorited_websites").get()
     if (specific_user.val() != None):
         for website in specific_user.each():
-            if (website.val() != input):
-                num_iter = num_iter + 1
-            else:
+            if (website.val() == input):
                 return True
-    firebase.database().child("users").child(id).child("favorited_websites").child(num_iter).set(input)
+    b64encoded = base64.b64encode(bytes(input, "utf-8"))
+    firebase.database().child("users").child(id).child("favorited_websites").child(b64encoded).set({"priority":"normal"})
 
 def get_favorites_list(id):
     temp_list = []
     the_user = firebase.database().child("users").child(id).child("favorited_websites").get()
     if (the_user.val() != None):
         for entry in the_user.each():
-            temp_list.append(entry.val())
+            p2 = base64.b64decode(entry.key()[1:]).decode()
+            temp_list.append(p2)
+    return temp_list
+
+def get_detailed_favorites_list(id):
+    temp_list = []
+    the_user = firebase.database().child("users").child(id).child("favorited_websites").get()
+    if (the_user.val() != None):
+        for entry in the_user.each():
+            p2 = []
+            p2.append(base64.b64decode(entry.key()[1:]).decode())
+            p2.append(entry.val())
+            temp_list.append(p2)
     return temp_list
 
 def get_recent_list(id):
@@ -276,14 +321,64 @@ def get_recent_list(id):
 def get_website_info(website):
     b64encoded = base64.b64encode(bytes(website, "utf-8"))
     website_results = firebase.database().child("database").child(b64encoded).child("safebrowsing").get()
-    print(website_results)
-    print(website_results.val())
     return website_results.val()
 
 def get_self_url():
     temp_str = request.url
     temp_str = temp_str.replace("http://127.0.0.1:5000/","")
     return(temp_str)
+
+def return_website(website_list):
+    results = []
+    for website in website_list:
+        b64encoded = base64.b64encode(bytes(website, "utf-8"))
+        website_results = firebase.database().child("database").child(b64encoded).child("safebrowsing").get()
+        if website_results.val() is not None:
+            results.append(True)
+        else:
+            results.append(False)
+    return results
+
+def update_favorite(id, website, cmd):
+    b64encoded = base64.b64encode(bytes(website, "utf-8"))
+    if (cmd == 'del'):
+        firebase.database().child("users").child(id).child("favorited_websites").child(b64encoded).remove()
+    elif(cmd == "1"):
+        firebase.database().child("users").child(id).child("favorited_websites").child(b64encoded).update({"priority":"no"})
+    elif (cmd == "2"):
+        firebase.database().child("users").child(id).child("favorited_websites").child(b64encoded).update({"priority": "normal"})
+    elif (cmd == "3"):
+        firebase.database().child("users").child(id).child("favorited_websites").child(b64encoded).update({"priority": "emer"})
+
+def get_email_freq(id):
+    the_user = firebase.database().child("users").child(id).child("email_freq").get()
+    return(the_user.val())
+
+def change_email_freq(id, num):
+    firebase.database().child("users").child(id).update({"email_freq":num})
+
+
+def send_emails(id):
+    the_user = firebase.database().child("users").child(id)
+    now = datetime.datetime.now()
+    email = the_user.child("email").get().val()
+    email_freq = the_user.child("email_freq").get().val()
+    last_time = the_user.child("last_time").get().val()
+    time_str = now.strftime("%Y%m%d")
+    message = create_message("mondomsecure@gmail.com", email, "Test Email", "This is a test email")
+    send_message(message=message)
+    firebase.database().child("users").child(id).update({"last_time":time_str})
+    """the_user = firebase.database().child("users").get()
+    if (the_user.val() != None):
+        for entry in the_user.each():
+            print(entry.val().get("email"))
+            message = create_message("mondomsecure@gmail.com", "msu009@ucr.edu", "Test Email", "This is a test email")
+            send_message(message=message)"""
+    return True
+
+def gentext(id):
+    message = ''
+    print(message)
 
 if __name__ == "__main__":
     app.run(debug=True)
