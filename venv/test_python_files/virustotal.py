@@ -121,7 +121,7 @@ def DomainReportReader(domain, delay):
             else:
                 print('Reading report for', domainSani)
 
-            # print(jsonResponse)
+            #print(jsonResponse)
             permalink = jsonResponse['permalink']
             scandate = jsonResponse['scan_date']
             positives = jsonResponse['positives']
@@ -162,6 +162,21 @@ except IOError as ioerr:
     print('Please ensure the file is closed.')
     print(ioerr)
 
+# file exists checks and CSV header writing again WIP
+try:
+    if os.path.exists('results2.csv'):  # if it this exists already, clear the file.
+        os.remove('results2.csv')
+    else:
+        # writes CSV headers
+        file = open('results2.csv', 'w+', newline='', encoding='utf-8')
+        header = ['Scan Date', 'Domain', 'Detection Ratio', 'Vendor', 'Category', 'Permalink']
+        headerWriter = csv.DictWriter(file, fieldnames=header)
+        headerWriter.writeheader()
+        file.close()
+except IOError as ioerr:
+    print('Please ensure the file is closed.')
+    print(ioerr)
+
 # open domains file and pass them to the scanning/report reading functions, write results to CSV
 try:
     with open(filepath,
@@ -170,6 +185,7 @@ try:
             domain = domain.strip('\n')
             delay = DomainScanner(domain)
             data = DomainReportReader(domain, delay)
+            print(data)
             with open('results.csv', 'a') as rfile:
                 dataWriter = csv.writer(rfile, delimiter=',')
                 dataWriter.writerow(data)
