@@ -202,7 +202,6 @@ def settings():
 def settings_update():
     text = request.form.get('input', "")
     text2 = request.form.get('send', "")
-    print(text2)
     email_good = False
     if (text != None):
         change_email_freq(current_user.id, text)
@@ -365,7 +364,8 @@ def send_emails(id):
     email_freq = the_user.child("email_freq").get().val()
     last_time = the_user.child("last_time").get().val()
     time_str = now.strftime("%Y%m%d")
-    message = create_message("mondomsecure@gmail.com", email, "Test Email", "This is a test email")
+    text = gentext(id)
+    message = create_message("mondomsecure@gmail.com", email, "MonDom Report", text)
     send_message(message=message)
     firebase.database().child("users").child(id).update({"last_time":time_str})
     """the_user = firebase.database().child("users").get()
@@ -378,7 +378,16 @@ def send_emails(id):
 
 def gentext(id):
     message = ''
-    print(message)
+    the_user = firebase.database().child("users").child(id).child("favorited_websites").get()
+    for website in the_user.each():
+        if website.val() != {'priority': 'no'}:
+            p2 = base64.b64decode(website.key()[1:]).decode()
+            temp = dict(firebase.database().child("database").child(website.key()).get().val())
+            if temp.get("safebrowsing") == None:
+                message = message + p2 + ": Good" + "\n"
+            else:
+                message = message + p2 + ": Bad" + "\n"
+    return message
 
 if __name__ == "__main__":
     app.run(debug=True)
