@@ -17,14 +17,14 @@ import base64
 from email_control import create_message, send_message
 
 firebaseConfig = {
-    "apiKey": "os.environ['FIREBASE_API_KEY']",
-    "authDomain": "mondom-97740.firebaseapp.com",
-    "databaseURL": "https://mondom-97740.firebaseio.com",
-    "projectId": "mondom-97740",
-    "storageBucket": "mondom-97740.appspot.com",
-    "messagingSenderId": "877143682729",
-    "appId": "1:877143682729:web:54f672e485632c73ad43b8",
-    "measurementId": "G-6S2J42P9KP"
+  "apiKey": "AIzaSyDUo_HsIYMSJRBfMqeK3e3jj6mjckt1Oq4",
+  "authDomain": "mondom.firebaseapp.com",
+  "databaseURL": "https://mondom.firebaseio.com",
+  "projectId": "mondom",
+  "storageBucket": "mondom.appspot.com",
+  "messagingSenderId": "258322858492",
+  "appId": "1:258322858492:web:fdb57668431af72a08f279",
+  "measurementId": "G-8S5ZYLERJW"
 };
 
 firebase = pyrebase.initialize_app(firebaseConfig)

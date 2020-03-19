@@ -154,7 +154,7 @@ try:
     else:
         # writes CSV headers
         file = open('results.csv', 'w+', newline='', encoding='utf-8')
-        header = ['https', 'siblings', 'downloadSamples', 'malwarebytes', 'referrerSamples', 'webutation', 'Opera', 'records', 'infectURL']
+        header = ['https', 'siblings', 'downloadSamples', 'malwarebytes', 'referrerSamples', 'webutation', 'records', 'infectURL']
         headerWriter = csv.DictWriter(file, fieldnames=header)
         headerWriter.writeheader()
         file.close()
