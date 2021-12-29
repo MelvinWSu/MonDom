@@ -17,14 +17,14 @@ import base64
 from email_control import create_message, send_message
 
 firebaseConfig = {
-  "apiKey": "AIzaSyDUo_HsIYMSJRBfMqeK3e3jj6mjckt1Oq4",
-  "authDomain": "mondom.firebaseapp.com",
-  "databaseURL": "https://mondom.firebaseio.com",
-  "projectId": "mondom",
-  "storageBucket": "mondom.appspot.com",
-  "messagingSenderId": "258322858492",
-  "appId": "1:258322858492:web:fdb57668431af72a08f279",
-  "measurementId": "G-8S5ZYLERJW"
+  "apiKey": "AIzaSyCLZj8jqb7-RUYZJPJSUCqsC6sDzIJjzNQ",
+  "authDomain": "mondom-97740.firebaseapp.com",
+  "databaseURL": "https://mondom-97740.firebaseio.com",
+  "projectId": "mondom-97740",
+  "storageBucket": "mondom-97740.appspot.com",
+  "messagingSenderId": "877143682729",
+  "appId": "1:877143682729:web:54f672e485632c73ad43b8",
+  "measurementId": "G-6S2J42P9KP"
 };
 
 firebase = pyrebase.initialize_app(firebaseConfig)
@@ -55,7 +55,7 @@ def get_google_provider_cfg():
 """root should no longer be accessed, use home as default url"""
 @app.route("/")
 def index():
-    send_emails("106141010986049248632")
+    """send_emails("106141010986049248632")"""
     if current_user.is_authenticated:
         return (
             "<p>Helloo, {}! You're logged in! Email: {}</p>"
@@ -361,6 +361,7 @@ def send_emails(id):
     the_user = firebase.database().child("users").child(id)
     now = datetime.datetime.now()
     email = the_user.child("email").get().val()
+    print(email)
     email_freq = the_user.child("email_freq").get().val()
     last_time = the_user.child("last_time").get().val()
     time_str = now.strftime("%Y%m%d")
